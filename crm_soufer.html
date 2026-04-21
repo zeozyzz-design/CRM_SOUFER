@@ -54,13 +54,14 @@ html,body{height:100%;background:var(--black);color:var(--text);font-family:'Bar
 
 /* APP */
 .app{display:none;height:100vh;overflow:hidden;flex-direction:row}
-.sidebar{width:240px;flex-shrink:0;background:var(--black2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:relative;overflow:visible}
+.sidebar{width:240px;flex-shrink:0;background:var(--black2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:relative;overflow:hidden}
 .sidebar::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--orange),var(--orange2),transparent)}
 .sidebar::after{content:'';position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(255,255,255,0.018) 39px,rgba(255,255,255,0.018) 40px)}
-.sidebar-head{padding:14px 14px 14px;position:relative;z-index:1}
+.sidebar-head{padding:14px 14px 14px;position:relative;z-index:1;flex-shrink:0}
 .logo-img{height:auto;max-height:40px;max-width:190px;width:auto;object-fit:contain;display:block;background:#fff;border-radius:6px;padding:5px 10px;}
 .logo-tag{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:600;letter-spacing:2px;color:var(--steel2);text-transform:uppercase;margin-top:8px;padding-left:1px}
-.nav-block{padding:8px 10px;position:relative;z-index:1}
+.nav-block{padding:8px 10px;position:relative;z-index:1;flex:1;overflow-y:auto;overflow-x:hidden}
+.nav-block::-webkit-scrollbar{width:3px}.nav-block::-webkit-scrollbar-track{background:transparent}.nav-block::-webkit-scrollbar-thumb{background:var(--black5);border-radius:3px}
 .nav-label{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:500;letter-spacing:1.5px;color:var(--steel);text-transform:uppercase;padding:10px 8px 5px}
 .nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:var(--radius);cursor:pointer;color:var(--text3);font-size:13px;font-weight:500;transition:all .15s;margin-bottom:1px;position:relative}
 .nav-item:hover{background:var(--black4);color:var(--text2)}
@@ -68,7 +69,7 @@ html,body{height:100%;background:var(--black);color:var(--text);font-family:'Bar
 .nav-item.active::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:2px;height:60%;background:var(--orange);border-radius:0 2px 2px 0}
 .nav-icon{width:15px;height:15px;flex-shrink:0;opacity:.6}
 .nav-item.active .nav-icon,.nav-item:hover .nav-icon{opacity:1}
-.sidebar-foot{padding:12px 10px;border-top:1px solid var(--border);position:relative;z-index:1;margin-top:auto}
+.sidebar-foot{padding:12px 10px;border-top:1px solid var(--border);position:relative;z-index:1;flex-shrink:0}
 .user-pill{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:var(--radius);background:var(--black4);margin-bottom:8px}
 .user-pill-name{font-size:12px;font-weight:600;flex:1}
 .user-pill-role{font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace}
