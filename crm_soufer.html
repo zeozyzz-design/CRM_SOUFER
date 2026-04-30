@@ -354,6 +354,10 @@ label:first-child{margin-top:0}
     </div>
     <div class="grid2">
       <div><label>Comprador</label><input id="e-comprador" placeholder="Nome do comprador"></div>
+      </div>
+      <div class="grid2">
+      <div><label>E-mail</label><input id="e-email" type="email" placeholder="contato@empresa.com.br"></div>
+      <div><!-- spacer --></div>
       <div><label>Telefone</label><input id="e-tel" placeholder="(11) 99999-0000"></div>
     </div>
     <div class="grid2">
@@ -660,6 +664,10 @@ label:first-child{margin-top:0}
           <div class="grid2">
             <div><label>Comprador</label><input id="c-comprador" placeholder="Nome do comprador"></div>
             <div><label>Telefone</label><input id="c-tel" placeholder="(11) 99999-0000"></div>
+          </div>
+          <div class="grid2">
+            <div><label>E-mail</label><input id="c-email" type="email" placeholder="contato@empresa.com.br"></div>
+            <div><!-- spacer --></div>
           </div>
           <div class="grid2">
             <div><label>Endereço</label><input id="c-endereco" placeholder="Av. Principal, 100"></div>
@@ -1121,7 +1129,7 @@ function renderClientes(){
   if(filDataRaw){const p=filDataRaw.split('-');filDataBR=p[2]+'/'+p[1]+'/'+p[0];}
   let base=clientesVisiveis();
   let lista=base.filter(c=>{
-    const bOk=(c.nome+' '+(c.telefone||'')+' '+(c.comprador||'')+' '+(c.endereco||'')+' '+(c.segmento||'')).toLowerCase().includes(busca);
+    const bOk=(c.nome+' '+(c.telefone||'')+' '+(c.comprador||'')+' '+(c.email||'')+' '+(c.endereco||'')+' '+(c.segmento||'')).toLowerCase().includes(busca);
     const vOk=!vend||c.vendedor===vend;
     const cOk=cidadesSel.size===0||cidadesSel.has((c.cidade||'').trim());
     const filSeg=document.getElementById('fil-segmento')?.value||'';
@@ -1153,7 +1161,7 @@ function renderClientes(){
     const dias=diasDesdeUltimaLig(c.id);
     const inativo=isInativo(c.id);
     const diasStr=dias===null?'sem contato':dias===0?'hoje':`há ${dias}d`;
-    const endStr=[c.comprador,c.cidade,c.uf,c.segmento].filter(Boolean).join(' · ');
+    const endStr=[c.comprador,c.email,c.cidade,c.uf,c.segmento].filter(Boolean).join(' · ');
     // Usa _idx (índice real no array) para evitar colisão de IDs duplicados
     const ref=c._idx!==undefined?c._idx:c.id;
     return`<div class="cli-row" onclick="abrirDetalhe(${JSON.stringify(ref)})">
@@ -1179,6 +1187,7 @@ function cadastrarCli(){
     id:gerarId('cli_'),
     codCliente:document.getElementById('c-cod').value.trim(),
     nome,
+    email:document.getElementById('c-email').value.trim(),
     comprador:document.getElementById('c-comprador').value.trim(),
     telefone:document.getElementById('c-tel').value.trim(),
     endereco:document.getElementById('c-endereco').value.trim(),
@@ -1212,6 +1221,7 @@ function abrirEdicao(ref){
   closeModal('modal-cli');
   document.getElementById('edit-sub').textContent='ID: '+cli.id;
   document.getElementById('e-cod').value=cli.codCliente||'';
+  document.getElementById('e-email').value=cli.email||'';
   document.getElementById('e-nome').value=cli.nome||'';
   document.getElementById('e-comprador').value=cli.comprador||'';
   document.getElementById('e-tel').value=cli.telefone||'';
@@ -1231,6 +1241,7 @@ function salvarEdicao(){
   if(!nome){toast('Nome obrigatório.','err');return;}
   cli.codCliente=document.getElementById('e-cod').value.trim();
   cli.nome=nome;
+  cli.email=document.getElementById('e-email').value.trim();
   cli.comprador=document.getElementById('e-comprador').value.trim();
   cli.segmento=document.getElementById('e-segmento').value;
   cli.telefone=document.getElementById('e-tel').value.trim();
@@ -1414,6 +1425,7 @@ function abrirDetalhe(ref){
     </div>
     ${cli.codCliente?`<div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);margin-bottom:3px">Cód: <strong style="color:var(--text2)">${cli.codCliente}</strong></div>`:''}
     ${cli.comprador?`<div style="font-size:12px;color:var(--text2);margin-bottom:3px">👤 Comprador: <strong>${cli.comprador}</strong></div>`:''}
+    ${cli.email?`<div style="font-size:12px;color:var(--text2);margin-bottom:3px">✉️ <a href="mailto:${cli.email}" style="color:var(--blue);text-decoration:none">${cli.email}</a></div>`:''}
     ${cli.segmento?`<div style="font-size:12px;color:var(--text2);margin-bottom:6px">🏭 ${cli.segmento}</div>`:''}
     <p style="font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace">
       ${cli.telefone||''}${cli.telefone&&(cli.endereco||cli.cidade)?' · ':''}${[cli.endereco,cli.cidade,cli.uf].filter(Boolean).join(' · ')}
@@ -1932,10 +1944,10 @@ function exportarLigacoes(){
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([[h,...rows].join('\n')],{type:'text/csv;charset=utf-8'}));a.download='contatos.csv';a.click();
 }
 function exportarClientes(){
-  const h='codCliente,nome,comprador,telefone,cidade,uf,vendedor,regiao,segmento,status,total_contatos,ultimo_contato,obs';
+  const h='codCliente,nome,comprador,email,telefone,cidade,uf,vendedor,regiao,segmento,status,total_contatos,ultimo_contato,obs';
   const rows=db.clientes.map(c=>{
     const ul=ultimaLig(c.id);
-    return[c.codCliente||'',c.nome,c.comprador||'',c.telefone||'',c.cidade||'',c.uf||'',c.vendedor||'',c.regiao||'',c.segmento||'',statusUltimo(c.id),totalLigs(c.id),ul?ul.data:'',c.obs||''].map(v=>`"${v}"`).join(',');
+    return[c.codCliente||'',c.nome,c.comprador||'',c.email||'',c.telefone||'',c.cidade||'',c.uf||'',c.vendedor||'',c.regiao||'',c.segmento||'',statusUltimo(c.id),totalLigs(c.id),ul?ul.data:'',c.obs||''].map(v=>`"${v}"`).join(',');
   });
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([[h,...rows].join('\n')],{type:'text/csv;charset=utf-8'}));a.download='clientes.csv';a.click();
 }
