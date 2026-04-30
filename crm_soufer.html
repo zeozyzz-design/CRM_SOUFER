@@ -1030,9 +1030,10 @@ function isGerente(){return usuarioAtual&&(GERENTES.includes(usuarioAtual));}
 const PODE_VER_TODOS=['Gerencial'];
 
 function clientesVisiveis(){
-  // Gerencial vê toda a base; vendedoras veem apenas seus clientes
-  if(PODE_VER_TODOS.includes(usuarioAtual)) return db.clientes;
-  return db.clientes.filter(c=>c.vendedor===usuarioAtual);
+  // Na Soufer todas as vendedoras compartilham a mesma base
+  // Gerencial e vendedoras veem todos os clientes
+  // O filtro por vendedora é opcional via fil-vend
+  return db.clientes;
 }
 
 function statusUltimo(cid){
@@ -1074,8 +1075,8 @@ function poblarSelects(){
     el.innerHTML=first+vs.map(v=>`<option value="${v}">${v}</option>`).join('');
     el.value=val;
     // vendedor filtro: se não é gerente, lock no próprio
-    if(id==='fil-vend'&&!PODE_VER_TODOS.includes(usuarioAtual)){el.value=usuarioAtual;el.disabled=true;}
-    else if(id==='fil-vend'){el.disabled=false;}
+    // Base compartilhada: vendedoras podem filtrar livremente por vendedora
+    if(id==='fil-vend') el.disabled=false;
   });
 }
 
